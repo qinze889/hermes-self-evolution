@@ -89,7 +89,8 @@ DEPRIORITIZE_KW = [
 ]
 
 MIN_SCORE = 3         # items below this don't appear in main report
-PROPOSAL_SCORE = 7    # items at or above this generate action proposals
+PROPOSAL_SCORE = 7    # GitHub items at or above this generate proposals
+AIHOT_PROPOSAL_SCORE = 999  # AI HOT never generates proposals (info only)
 
 
 def http_get_json(url, headers=None, timeout=30):
@@ -215,12 +216,12 @@ def generate_actions(item):
             "category": "economy",
         })
 
-    # Agent/tool related → capability expansion
-    if any(kw in keywords for kw in ["agent", "tool", "mcp", "tools", "sandbox"]):
+    # Agent/tool/skill/MCP related → check if it's a hermes-agent specific improvement
+    if any(kw in keywords for kw in ["skill", "mcp", "tool"]) and item.get("source") == "GitHub":
         actions.append({
-            "action": f"评估「{title[:40]}」中的工具/模式是否可集成到 Hermes",
-            "benefit": "扩展 Hermes 工具链与自动化能力",
-            "effort": "中",
+            "action": f"审查 hermes-agent PR「{title[:50]}」是否可直接应用到本地 Hermes",
+            "benefit": "跟上社区更新，避免本地版本落后",
+            "effort": "低" if "fix" in title.lower() else "中",
             "category": "capability",
         })
 
@@ -319,9 +320,9 @@ def fetch_aihot(hours=24):
     save_seen(seen)
     elapsed = time.monotonic() - start
 
-    # Post-process: generate actions for high-score items
+    # Post-process: AI HOT items never generate proposals (info-only source)
     for f in findings:
-        f["actions"] = generate_actions(f)
+        f["actions"] = []  # AI HOT is info-only, no proposals
 
     findings.sort(key=lambda x: x["score"], reverse=True)
 
