@@ -3,7 +3,8 @@
 
 数据源:
   1. AI HOT (aihot.virxact.com) — 中文 AI 行业动态
-  2. GitHub (NousResearch/hermes-agent) — 社区技巧
+  2. GitHub Trending — 热门 AI Agent/MCP 仓库
+  3. Arxiv — 最新 AI 论文
 
 结果写入 ~/.hermes/learnings/YYYY-MM-DD.md
 包含: 来源状态、相关性评分、对 Hermes 影响分析、可行动建议
@@ -51,13 +52,25 @@ AIHOT_UA = (
     "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
 )
 
-GH_API = "https://api.github.com/repos/NousResearch/hermes-agent"
+GH_SEARCH_API = "https://api.github.com/search/repositories"
 GH_HEADERS = {
     "User-Agent": "Hermes-Learner/3.0",
     "Accept": "application/vnd.github.v3+json",
 }
 
 GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN", "").strip()
+if not GITHUB_TOKEN:
+    # Try loading from .env for standalone runs
+    env_path = os.path.join(HERMES_HOME, ".env")
+    if os.path.exists(env_path):
+        with open(env_path, encoding="utf-8") as ef:
+            for line in ef:
+                line = line.strip()
+                if line.startswith("GITHUB_TOKEN="):
+                    val = line.split("=", 1)[1].strip().strip("\"'")
+                    if val and val != "***":
+                        GITHUB_TOKEN = val
+                        break
 if GITHUB_TOKEN:
     GH_HEADERS["Authorization"] = f"Bearer {GITHUB_TOKEN}"
 
@@ -79,6 +92,12 @@ KW_SCORES = {
     "进化": 1, "自我": 1, "autonomous": 1,
     "轻量": 1, "fast": 1, "lightweight": 1,
     "function call": 1, "structured output": 1,
+    # Chinese keywords for AI HOT (中文 AI 资讯)
+    "模型": 2, "ai": 2, "降价": 2, "折扣": 2,
+    "供应链": 2, "攻击": 2, "安全": 2,
+    "融资": 1, "发布": 1, "开源": 1,
+    "工作流": 1, "框架": 1, "gpt": 2,
+    "claude": 2, "deepseek": 2, "gemini": 2,
 }
 # Deprioritize: PR/branding noise AND low-value chore/cleanup PRs
 DEPRIORITIZE_KW = [
@@ -89,8 +108,7 @@ DEPRIORITIZE_KW = [
 ]
 
 MIN_SCORE = 3         # items below this don't appear in main report
-PROPOSAL_SCORE = 7    # GitHub items at or above this generate proposals
-AIHOT_PROPOSAL_SCORE = 999  # AI HOT never generates proposals (info only)
+PROPOSAL_SCORE = 7    # items at or above this generate proposals
 
 
 def http_get_json(url, headers=None, timeout=30):
@@ -138,8 +156,8 @@ def item_hash(item):
     return hashlib.sha256(text.encode()).hexdigest()[:16]
 
 
-def score_item(title, summary, source_name, category):
-    """Calculate relevance score for a finding."""
+def score_item(title, summary):
+    """Calculate relevance score for a finding. Returns (score, matched_keywords)."""
     text = ((title or "") + " " + (summary or "")).lower()
     score = 0
     matched = []
@@ -166,107 +184,133 @@ def score_item(title, summary, source_name, category):
 
 
 def generate_insight(item):
-    """Generate a brief insight about what this finding means for Hermes."""
-    title = (item.get("title") or "").lower()
-    summary = (item.get("summary") or "").lower()
-    text = title + " " + summary
+    """Generate specific insight referencing the actual finding content."""
+    title = (item.get("title") or "")
+    summary = (item.get("summary") or "")
+    source = item.get("source", "")
+    text = (title + " " + summary).lower()
 
     insights = []
-    if any(kw in text for kw in ["token", "tokens"]):
-        insights.append("📊 关注 token 成本与效率优化")
-    if any(kw in text for kw in ["agent", "代理"]):
-        insights.append("🤖 Agent 架构与能力边界参考")
-    if any(kw in text for kw in ["context", "上下文"]):
-        insights.append("📝 上下文管理与压缩策略")
-    if any(kw in text for kw in ["tool", "mcp", "tools"]):
-        insights.append("🔧 工具链与扩展能力")
-    if any(kw in text for kw in ["cost", "节省", "优化"]):
-        insights.append("💰 成本控制与优化方向")
-    if any(kw in text for kw in ["eval", "benchmark"]):
-        insights.append("📏 评估与基准参考")
+    short_title = title[:80]
 
-    return insights if insights else ["📰 行业动态参考"]
+    if source == "GitHub 热榜":
+        # Extract description from summary format "[lang] ★N — desc"
+        desc = summary.split("—", 1)[-1].strip() if "—" in summary else summary
+        insights.append(f"📦 **{short_title}**: {desc[:150]}")
+
+        if "mcp" in text:
+            insights.append("🔧 MCP 工具链：评估该实现是否可注册为 Hermes 原生工具")
+        elif "agent" in text:
+            insights.append("🤖 Agent 设计：该项目的架构思路可参考用于改进 Hermes agent 层")
+        elif "memory" in text or "context" in text:
+            insights.append("🧠 上下文管理：对比 Hermes 当前 memory/context 策略")
+        elif "tool" in text:
+            insights.append("🔧 工具链参考：评估该项目功能是否能以 skill 形式集成")
+        else:
+            insights.append("📋 社区新项目，值得关注其技术方向")
+
+    elif source == "Arxiv":
+        insights.append(f"📄 **{short_title}**")
+        if "agent" in text:
+            insights.append("📚 agent 方向论文建议通读，评估方法论是否适用")
+        elif "tool" in text or "mcp" in text:
+            insights.append("📚 工具/协议方向论文，关注其设计思路的可移植性")
+        else:
+            insights.append("📚 建议通读摘要，评估与 Hermes 的相关性")
+
+    elif source == "AI HOT":
+        insights.append(f"🔥 {short_title}")
+        if any(kw in text for kw in ("降价", "折扣", "价格")):
+            insights.append("💰 provider 价格变动，评估是否调整当前模型选型")
+        elif any(kw in text for kw in ("攻击", "安全", "泄露", "漏洞")):
+            insights.append("🛡️ 安全事件，需检查 Hermes 基础设施是否受影响")
+        elif any(kw in text for kw in ("融资", "收购")):
+            insights.append("🏭 行业资本动态，关注对 API 服务稳定性的影响")
+        else:
+            insights.append("📡 行业动态，关注对 AI 生态的潜在影响")
+
+    return insights if insights else ["📰 值得关注的行业动态"]
 
 
 def generate_actions(item):
-    """Generate specific, actionable suggestions for high-score findings."""
+    """Generate actionable suggestions that reference the actual finding."""
     title = (item.get("title") or "")
     summary = (item.get("summary") or "")
-    text = (title + " " + summary).lower()
+    source = item.get("source", "")
     score = item.get("score", 0)
-    keywords = item.get("keywords", [])
+    text = (title + " " + summary).lower()
 
     if score < PROPOSAL_SCORE:
         return []
 
+    short = title[:60]
     actions = []
 
-    # Token/cost related → specific optimization suggestions
-    if any(kw in keywords for kw in ["token", "tokens", "cost"]):
+    if source == "GitHub 热榜":
+        desc = summary.split("—", 1)[-1].strip() if "—" in summary else summary
+
+        if "mcp" in text:
+            actions.append({
+                "action": f"分析 [{short}]({item.get('url','')}) 的 MCP 实现，评估注册为 Hermes 工具的可行性与工作量",
+                "benefit": "扩展 Hermes 工具链能力",
+                "effort": "中",
+                "category": "tool",
+            })
+        if "agent" in text:
+            actions.append({
+                "action": f"阅读 [{short}]({item.get('url','')}) 的 agent 架构设计，提取可复用模式",
+                "benefit": "改进 Hermes agent 层设计",
+                "effort": "低",
+                "category": "agent",
+            })
+        if not actions:
+            # Fallback: generic but still references the repo
+            actions.append({
+                "action": f"调研 [{short}]({item.get('url','')})：{desc[:100]}",
+                "benefit": "评估是否值得集成进 Hermes 生态",
+                "effort": "低",
+                "category": "research",
+            })
+
+    elif source == "Arxiv":
         actions.append({
-            "action": "分析 DeepSeek 近 7 天 token 消耗分布，识别高成本任务模式",
-            "benefit": "发现优化机会，预计可节省 15-30% 配额",
+            "action": f"通读 [{short}]({item.get('url','')}) 论文摘要与结论，标注与 Hermes 相关的技术点",
+            "benefit": "跟踪学术前沿，发现可落地的技术方案",
             "effort": "低",
-            "category": "economy",
-        })
-        actions.append({
-            "action": "审查 context compaction threshold 是否可进一步降低",
-            "benefit": "减少长对话 token 膨胀",
-            "effort": "低",
-            "category": "economy",
+            "category": "research",
         })
 
-    # Agent/tool/skill/MCP related → check if it's a hermes-agent specific improvement
-    if any(kw in keywords for kw in ["skill", "mcp", "tool"]) and item.get("source") == "GitHub":
-        actions.append({
-            "action": f"审查 hermes-agent PR「{title[:50]}」是否可直接应用到本地 Hermes",
-            "benefit": "跟上社区更新，避免本地版本落后",
-            "effort": "低" if "fix" in title.lower() else "中",
-            "category": "capability",
-        })
-
-    # Context/compression → context management
-    if any(kw in keywords for kw in ["context", "上下文", "compression"]):
-        actions.append({
-            "action": "审计当前 memory 条目冗余度，清理过期/stale 信息",
-            "benefit": "提升上下文利用率，降低每轮 token 开销",
-            "effort": "低",
-            "category": "context",
-        })
-
-    # Prompt related → prompt engineering
-    if any(kw in keywords for kw in ["prompt"]):
-        actions.append({
-            "action": "对比社区最新 prompt 策略与 Hermes 当前配置，标记差异点",
-            "benefit": "跟上社区最佳实践，提升回复质量",
-            "effort": "低",
-            "category": "quality",
-        })
-
-    # Caching/speed → performance
-    if any(kw in keywords for kw in ["cache", "caching", "speed", "latency"]):
-        actions.append({
-            "action": "检查 gateway 层缓存命中率，调整 cache TTL 策略",
-            "benefit": "减少重复 API 调用，降低延迟和成本",
-            "effort": "低",
-            "category": "performance",
-        })
-
-    # Eval/benchmark → quality measurement
-    if any(kw in keywords for kw in ["eval", "benchmark"]):
-        actions.append({
-            "action": "设计针对 Hermes 核心工作流的回归测试基准",
-            "benefit": "每次模型/配置变更时有客观质量度量",
-            "effort": "中",
-            "category": "quality",
-        })
+    elif source == "AI HOT":
+        if any(kw in text for kw in ("降价", "折扣", "价格")):
+            actions.append({
+                "action": "对比该价格变动对当前 Hermes provider 选型的影响，更新成本对比表",
+                "benefit": "优化 API 调用成本",
+                "effort": "低",
+                "category": "economy",
+            })
+        elif any(kw in text for kw in ("攻击", "安全", "泄露")):
+            actions.append({
+                "action": "检查 Hermes 是否使用了受影响的库/服务，评估是否需要应急更新",
+                "benefit": "保障系统安全",
+                "effort": "中",
+                "category": "security",
+            })
+        else:
+            actions.append({
+                "action": f"记录 [{short}]({item.get('url','')}) 的关键信息至行业动态知识库",
+                "benefit": "保持对 AI 行业趋势的跟踪",
+                "effort": "低",
+                "category": "research",
+            })
 
     return actions
 
 
 # ── Source 1: AI HOT ─────────────────────────────
-def fetch_aihot(hours=24):
+def fetch_aihot(hours=24, seen=None):
     """Fetch recent AI HOT items with scoring."""
+    if seen is None:
+        seen = load_seen()
     start = time.monotonic()
     try:
         since_utc = datetime.now(CST).astimezone(timezone.utc) - timedelta(hours=hours)
@@ -281,7 +325,6 @@ def fetch_aihot(hours=24):
         logger.warning("AI HOT fetch failed (%.1fs): %s", elapsed, e)
         return [], {"status": "failed", "error": str(e), "latency_ms": int(elapsed * 1000), "count": 0}
 
-    seen = load_seen()
     findings = []
 
     for item in items:
@@ -293,8 +336,6 @@ def fetch_aihot(hours=24):
         summary = (item.get("summary") or "")[:300]
         score, matched = score_item(
             title, summary,
-            item.get("source", ""),
-            item.get("category", ""),
         )
 
         seen[hid] = {
@@ -303,7 +344,7 @@ def fetch_aihot(hours=24):
             "score": score,
         }
         if score >= MIN_SCORE:
-            findings.append({
+            fe = {
                 "source": "AI HOT",
                 "title": title,
                 "url": item.get("url", ""),
@@ -313,16 +354,12 @@ def fetch_aihot(hours=24):
                 "keywords": matched,
                 "category": item.get("category", ""),
                 "score": score,
-                "insights": generate_insight({"title": title, "summary": summary}),
-                "actions": [],
-            })
+            }
+            fe["insights"] = generate_insight(fe)
+            fe["actions"] = generate_actions(fe)
+            findings.append(fe)
 
-    save_seen(seen)
     elapsed = time.monotonic() - start
-
-    # Post-process: AI HOT items never generate proposals (info-only source)
-    for f in findings:
-        f["actions"] = []  # AI HOT is info-only, no proposals
 
     findings.sort(key=lambda x: x["score"], reverse=True)
 
@@ -334,83 +371,206 @@ def fetch_aihot(hours=24):
     }
 
 
-# ── Source 2: GitHub ──────────────────────────────
-def fetch_github(days=7):
-    """Scan recent GitHub issues/PRs with scoring."""
+# ── Source 2: GitHub Trending Search ──────────────
+def fetch_github_trending(days=7, seen=None):
+    """Search GitHub for trending AI agent repos beyond hermes-agent."""
+    if seen is None:
+        seen = load_seen()
     start = time.monotonic()
-    try:
-        issues_data, gh_status, gh_err = http_get_json(
-            f"{GH_API}/issues?state=all&per_page=30&sort=updated&direction=desc",
-            headers=GH_HEADERS,
-        )
-        if gh_status != "ok":
-            raise RuntimeError(gh_err or "unknown error")
-    except Exception as e:
-        elapsed = time.monotonic() - start
-        logger.warning("GitHub fetch failed (%.1fs): %s", elapsed, e)
-        return [], {"status": "failed", "error": str(e), "latency_ms": int(elapsed * 1000), "count": 0}
-
+    queries = [
+        # Key topics (most distinct, was 6 → kept 3 most distinct)
+        "topic:ai-agent",
+        "topic:mcp-server",
+        "topic:agent-framework",
+        # Broader text fallback (catches repos not explicitly tagged)
+        "AI agent framework tool",
+        "MCP server tools LLM",
+    ]
+    all_findings = []
+    seen_titles = set()
     cutoff = datetime.now(timezone.utc) - timedelta(days=days)
-    seen = load_seen()
-    findings = []
 
-    for item in issues_data:
-        updated = item.get("updated_at", "")
+    for query in queries:
         try:
-            updated_dt = datetime.fromisoformat(updated.replace("Z", "+00:00"))
-        except Exception:
-            continue
-        if updated_dt < cutoff:
+            q = query.replace(" ", "+")
+            url = f"{GH_SEARCH_API}?q={q}&sort=updated&per_page=5&order=desc"
+            data, gh_status, gh_err = http_get_json(url, headers=GH_HEADERS)
+            if gh_status != "ok":
+                logger.warning("GitHub trending search '%s' failed: %s", query, gh_err or "unknown")
+                continue
+            items = data.get("items", [])
+        except Exception as e:
+            logger.warning("GitHub trending search '%s' error: %s", query, e)
             continue
 
-        hid = item_hash({"source": "GitHub", "url": item.get("html_url", ""), "title": item.get("title", "")})
-        if hid in seen:
-            continue
+        for item in items:
+            full_name = item.get("full_name", "")
+            title = item.get("description", "") or item.get("name", "")
+            html_url = item.get("html_url", "")
 
-        title = item.get("title", "")
-        body = (item.get("body") or "")[:500]
-        score, matched = score_item(title, body, "GitHub", "")
+            hid = item_hash({"source": "GitHubTrending", "url": html_url, "title": full_name})
+            if hid in seen or full_name in seen_titles:
+                continue
 
-        seen[hid] = {
-            "first_seen": datetime.now(CST).isoformat(),
-            "source": "github",
-            "score": score,
-        }
-        if score >= MIN_SCORE:
-            findings.append({
-                "source": "GitHub",
-                "type": "PR" if "pull_request" in item else "Issue",
-                "number": item["number"],
-                "title": title,
-                "url": item["html_url"],
-                "keywords": matched,
-                "state": item["state"],
-                "updated": updated,
+            updated = item.get("updated_at", "")
+            try:
+                updated_dt = datetime.fromisoformat(updated.replace("Z", "+00:00"))
+            except Exception:
+                continue
+            if updated_dt < cutoff:
+                continue
+
+            description = (item.get("description") or "")[:300]
+            lang = item.get("language") or ""
+            stars = item.get("stargazers_count", 0)
+            topics = item.get("topics", [])
+            search_text = f"{full_name} {description} {' '.join(topics)}"
+            score, matched = score_item(search_text, description)
+
+            # Star bonus: trending repos get extra relevance
+            if stars > 1000:
+                score += 1
+            if "agent" in search_text.lower() or "mcp" in search_text.lower():
+                score += 1
+            score = min(score, 10)  # cap after bonuses
+
+            seen[hid] = {
+                "first_seen": datetime.now(CST).isoformat(),
+                "source": "github_trending",
                 "score": score,
-                "summary": body[:300],
-                "body": body,
-                "insights": generate_insight({"title": title, "summary": body}),
-                "actions": [],
-            })
+            }
+            if score >= MIN_SCORE:
+                summary = f"[{lang}] ★{stars} — {description}" if lang else f"★{stars} — {description}"
+                findings_entry = {
+                    "source": "GitHub 热榜",
+                    "title": full_name,
+                    "url": html_url,
+                    "source_name": query,
+                    "summary": summary,
+                    "published": updated,
+                    "keywords": matched,
+                    "category": f"github/{lang}" if lang else "github",
+                    "score": score,
+                    "actions": [],
+                }
+                findings_entry["insights"] = generate_insight(findings_entry)
+                findings_entry["actions"] = generate_actions(findings_entry)
+                all_findings.append(findings_entry)
+            seen_titles.add(full_name)
 
-    save_seen(seen)
+    all_findings.sort(key=lambda x: x["score"], reverse=True)
     elapsed = time.monotonic() - start
-
-    for f in findings:
-        f["actions"] = generate_actions(f)
-
-    findings.sort(key=lambda x: x["score"], reverse=True)
-
-    return findings, {
+    return all_findings, {
         "status": "ok",
-        "count": len(findings),
-        "total_fetched": len(issues_data),
+        "count": len(all_findings),
+        "queries": len(queries),
+        "latency_ms": int(elapsed * 1000),
+    }
+
+
+# ── Source 3: Arxiv Search ────────────────────────
+def fetch_arxiv(days=3, seen=None):
+    """Search recent Arxiv papers on AI agents and LLM tools."""
+    if seen is None:
+        seen = load_seen()
+    start = time.monotonic()
+    import urllib.parse as _up
+    queries = [
+        "all:AI agent tool",
+        "all:large language model agent framework",
+        "all:MCP model context protocol",
+        "all:autonomous agent LLM",
+    ]
+    all_findings = []
+    seen_ids = set()
+
+    for query in queries:
+        try:
+            safe_q = _up.quote(query)
+            url = f"https://export.arxiv.org/api/query?search_query={safe_q}&max_results=5&sortBy=submittedDate&sortOrder=descending"
+            # 429 retry with backoff
+            root = None
+            for attempt in range(3):
+                try:
+                    import xml.etree.ElementTree as ET
+                    req = urllib.request.Request(url, headers={"User-Agent": "Hermes-Learner/3.0"})
+                    ctx = ssl.create_default_context()
+                    resp = urllib.request.urlopen(req, timeout=30, context=ctx)
+                    xml_text = resp.read()
+                    root = ET.fromstring(xml_text)
+                    break
+                except urllib.error.HTTPError as e:
+                    if e.code == 429 and attempt < 2:
+                        wait = 5 * (attempt + 1)
+                        logger.warning("Arxiv 429, retrying in %ds...", wait)
+                        time.sleep(wait)
+                        continue
+                    logger.warning("Arxiv search '%s' failed: HTTP %d", query, e.code)
+                    break
+                except ET.ParseError as e:
+                    logger.warning("Arxiv XML parse failed for '%s': %s", query, e)
+                    break
+            if root is None:
+                continue
+            ns = {"atom": "http://www.w3.org/2005/Atom"}
+            for entry in root.findall("atom:entry", ns):
+                entry_id = entry.find("atom:id", ns)
+                entry_title = entry.find("atom:title", ns)
+                entry_summary = entry.find("atom:summary", ns)
+                entry_published = entry.find("atom:published", ns)
+                entry_link = entry.find("atom:link", ns)
+                if entry_id is None:
+                    continue
+                eid = entry_id.text or ""
+                etitle = (entry_title.text or "").strip().replace("\n", " ")[:200] if entry_title is not None else ""
+                esummary = (entry_summary.text or "").strip().replace("\n", " ")[:500] if entry_summary is not None else ""
+                epub = (entry_published.text or "")[:10] if entry_published is not None else ""
+                elink = entry_link.get("href", eid) if entry_link is not None else eid
+                if eid in seen_ids:
+                    continue
+                seen_ids.add(eid)
+
+                hid = item_hash({"source": "Arxiv", "url": elink, "title": etitle})
+                if hid in seen:
+                    continue
+
+                score, matched = score_item(etitle, esummary)
+                seen[hid] = {
+                    "first_seen": datetime.now(CST).isoformat(),
+                    "source": "arxiv",
+                    "score": score,
+                }
+                if score >= MIN_SCORE:
+                    fe = {
+                        "source": "Arxiv",
+                        "title": etitle,
+                        "url": elink,
+                        "source_name": query,
+                        "summary": esummary[:300],
+                        "published": epub,
+                        "keywords": matched,
+                        "category": "学术论文",
+                        "score": score,
+                        "actions": [],
+                    }
+                    fe["insights"] = generate_insight(fe)
+                    fe["actions"] = generate_actions(fe)
+                    all_findings.append(fe)
+        except Exception as e:
+            logger.warning("Arxiv XML parse error for '%s': %s", query, e)
+
+    all_findings.sort(key=lambda x: x["score"], reverse=True)
+    elapsed = time.monotonic() - start
+    return all_findings, {
+        "status": "ok",
+        "count": len(all_findings),
         "latency_ms": int(elapsed * 1000),
     }
 
 
 # ── Report Generation ─────────────────────────────
-def format_report(aihot_findings, gh_findings, aihot_status, gh_status):
+def format_report(aihot_findings, trending_findings, arxiv_findings,
+                  aihot_status, trending_status, arxiv_status):
     """Generate markdown daily learning report."""
     now = datetime.now(CST)
     date_str = now.strftime("%Y-%m-%d")
@@ -418,11 +578,11 @@ def format_report(aihot_findings, gh_findings, aihot_status, gh_status):
 
     lines = [
         f"# 🧠 Hermes 学习报告 — {date_str}",
-        f"\n> 自动生成于 {now_str} | 数据源: AI HOT + GitHub\n",
+        f"\n> 自动生成于 {now_str} | 数据源: AI HOT + GitHub热榜 + Arxiv\n",
     ]
 
-    total = len(aihot_findings) + len(gh_findings)
-    high_score = sum(1 for f in aihot_findings + gh_findings if f["score"] >= PROPOSAL_SCORE)
+    total = len(aihot_findings) + len(trending_findings) + len(arxiv_findings)
+    high_score = sum(1 for f in aihot_findings + trending_findings + arxiv_findings if f["score"] >= PROPOSAL_SCORE)
 
     lines.append("## 📊 概况\n")
     lines.append(f"| 来源 | 状态 | 获取 | 收录 |")
@@ -432,10 +592,54 @@ def format_report(aihot_findings, gh_findings, aihot_status, gh_status):
         f"| {aihot_status.get('total_fetched', '-')} | {aihot_status['count']} |"
     )
     lines.append(
-        f"| 💻 GitHub | {_status_icon(gh_status['status'])} "
-        f"| {gh_status.get('total_fetched', '-')} | {gh_status['count']} |"
+        f"| 🌟 GitHub 热榜 | {_status_icon(trending_status['status'])} "
+        f"| {trending_status.get('queries', '-')} 组 | {trending_status['count']} |"
+    )
+    lines.append(
+        f"| 📄 Arxiv 论文 | {_status_icon(arxiv_status['status'])} "
+        f"| - | {arxiv_status['count']} |"
     )
     lines.append(f"\n总计: {total} 条 | 高价值 (≥{PROPOSAL_SCORE}分): {high_score} 条\n")
+
+    # System health dashboard (always shown)
+    try:
+        proposals_dir = os.path.join(HERMES_HOME, "proposals")
+        if not os.path.isdir(proposals_dir):
+            logger.debug("Proposals directory not found, skipping health dashboard")
+        else:
+            counts = {"pending": 0, "approved": 0, "rejected": 0, "deferred": 0,
+                      "implementing": 0, "implemented": 0, "verified": 0, "failed": 0}
+            for fname in os.listdir(proposals_dir):
+                if not fname.endswith(".md") or fname in ("INDEX.md", "TEMPLATE.md", "REVIEWED.md"):
+                    continue
+                fp = os.path.join(proposals_dir, fname)
+                with open(fp, encoding="utf-8") as pf:
+                    content = pf.read()
+                for line in content.split("\n"):
+                    if line.startswith("status:"):
+                        s = line.split(":", 1)[1].strip()
+                        if s in counts:
+                            counts[s] += 1
+                        break
+            total_proposals = sum(counts.values())
+            if total_proposals:
+                lines.append("")
+                lines.append("## 📊 系统健康\n")
+                lines.append("| 状态 | 数量 |")
+                lines.append("|:---|---:|")
+                for s in ("pending", "approved", "rejected", "deferred", "implementing", "implemented", "verified", "failed"):
+                    cnt = counts.get(s, 0)
+                    if cnt:
+                        icon = {"pending": "⏳", "approved": "✅", "rejected": "❌", "deferred": "⏭️",
+                                "implementing": "🔧", "implemented": "📦", "verified": "🎯", "failed": "💥"}.get(s, "❓")
+                        lines.append(f"| {icon} {s} | {cnt} |")
+                lines.append(f"| **总计** | **{total_proposals}** |")
+                lines.append("")
+                if counts.get("pending", 0) > 50:
+                    lines.append("⚠️ **待审提案超过 50 份，建议触发批量审查。**\n")
+    except Exception as e:
+        logger.warning("Failed to build system health dashboard: %s", e)
+        # Don't fail the whole report — just skip this section
 
     if total == 0:
         lines.append("## 📭 今日无新发现\n")
@@ -458,14 +662,28 @@ def format_report(aihot_findings, gh_findings, aihot_status, gh_status):
                     lines.append(f"  - {a['action']}（收益: {a['benefit']}, 工作量: {a['effort']}）")
             lines.append("")
 
-    # GitHub findings
-    if gh_findings:
-        lines.append("## 💻 GitHub 发现\n")
-        for i, f in enumerate(gh_findings, 1):
+    # GitHub trending findings
+    if trending_findings:
+        lines.append("## 🌟 GitHub 热榜\n")
+        for i, f in enumerate(trending_findings, 1):
             score_bar = "█" * min(f["score"], 10)
-            lines.append(f"### {i}. [{f['state'].upper()}] [{f['title']}]({f['url']})")
-            kw_str = " ".join(f"`{k}`" for k in f.get("keywords", []))
-            lines.append(f"⭐ {f['score']}/10 {score_bar} | {kw_str}")
+            lines.append(f"### {i}. [{f['title']}]({f['url']})")
+            lines.append(f"📁 {f['source_name']} | ⭐ {f['score']}/10 {score_bar} | {f['summary']}")
+            if f.get("insights"):
+                lines.append(f"💡 {' | '.join(f['insights'])}")
+            if f.get("actions"):
+                lines.append("📋 **建议行动:**")
+                for a in f["actions"]:
+                    lines.append(f"  - {a['action']}（收益: {a['benefit']}, 工作量: {a['effort']}）")
+            lines.append("")
+
+    # Arxiv findings
+    if arxiv_findings:
+        lines.append("## 📄 Arxiv 论文\n")
+        for i, f in enumerate(arxiv_findings, 1):
+            score_bar = "█" * min(f["score"], 10)
+            lines.append(f"### {i}. [{f['title']}]({f['url']})")
+            lines.append(f"📅 {f.get('published', '')} | ⭐ {f['score']}/10 {score_bar} | {f.get('summary', '')[:100]}")
             if f.get("insights"):
                 lines.append(f"💡 {' | '.join(f['insights'])}")
             if f.get("actions"):
@@ -477,19 +695,26 @@ def format_report(aihot_findings, gh_findings, aihot_status, gh_status):
     # Source status section
     lines.append("---\n")
     lines.append("## 🔧 数据源状态\n")
+    lines.append("| 来源 | 状态 | 延迟 | 信息 |")
+    lines.append("|---|---:|---:|")
     lines.append(
         f"| AI HOT | {_status_icon(aihot_status['status'])} "
         f"| {aihot_status.get('latency_ms', '-')}ms "
         f"| {aihot_status.get('error', '-')} |"
     )
     lines.append(
-        f"| GitHub | {_status_icon(gh_status['status'])} "
-        f"| {gh_status.get('latency_ms', '-')}ms "
-        f"| {gh_status.get('error', '-')} |"
+        f"| GitHub 热榜 | {_status_icon(trending_status['status'])} "
+        f"| {trending_status.get('latency_ms', '-')}ms "
+        f"| {trending_status.get('error', '-')} |"
+    )
+    lines.append(
+        f"| Arxiv 论文 | {_status_icon(arxiv_status['status'])} "
+        f"| {arxiv_status.get('latency_ms', '-')}ms "
+        f"| {arxiv_status.get('error', '-')} |"
     )
 
     lines.append(f"\n---")
-    lines.append(f"> ⚖️ v3 自动生成 | 评分阈值: {MIN_SCORE} | 提案阈值: {PROPOSAL_SCORE}\n")
+    lines.append(f"> ⚖️ v3 自动生成 | 评分阈值: {MIN_SCORE} | 提案阈值: {PROPOSAL_SCORE}")
 
     return "\n".join(lines)
 
@@ -500,13 +725,6 @@ def _status_icon(status):
     if status == "n/a":
         return "⏭️"
     return "❌"
-
-
-def save_proposals(findings, date_str):
-    """Save high-score findings as actionable proposal files."""
-    proposals_dir = os.path.join(HERMES_HOME, "proposals")
-    os.makedirs(proposals_dir, exist_ok=True)
-
 
 
 def save_proposals(findings, date_str):
@@ -527,17 +745,55 @@ def save_proposals(findings, date_str):
             "## 工作量评估\n<!-- 低/中/高 + 预估时间 -->\n\n"
             "## 审批\n<!-- 待审批 / 已通过 / 已拒绝 -->\n"
         )
-        with open(template_path, "w") as f:
+        with open(template_path, "w", encoding="utf-8") as f:
             f.write(template)
 
     saved = 0
+
+    # Load existing proposal URLs for dedup (source + normalized URL as key)
+    from urllib.parse import urlparse, urlunparse
+    existing_keys = set()
+    try:
+        for fname in os.listdir(proposals_dir):
+            if not fname.endswith(".md") or fname in ("INDEX.md", "TEMPLATE.md", "REVIEWED.md"):
+                continue
+            fpath = os.path.join(proposals_dir, fname)
+            with open(fpath, encoding="utf-8") as pf:
+                content = pf.read()
+            if "status: pending" in content or "status: approved" in content or "status: verified" in content:
+                for line in content.split("\n"):
+                    if line.startswith("source_url:"):
+                        url = line.split(":", 1)[1].strip()
+                        if url and url != "~":
+                            # Normalize: strip query/fragment for stable dedup
+                            parsed = urlparse(url)
+                            normalized = urlunparse((parsed.scheme, parsed.netloc, parsed.path, "", "", ""))
+                            existing_keys.add(normalized)
+                        break
+    except Exception as e:
+        logger.warning("Failed to scan existing proposals for dedup: %s", e)
+
+    from urllib.parse import urlparse, urlunparse as _urlunparse
+    
     for f in findings:
         if not f.get("actions"):
             continue
+        # Dedup by normalized source URL
+        source_url = f.get("url", "")
+        if source_url:
+            try:
+                parsed = urlparse(source_url)
+                norm_url = _urlunparse((parsed.scheme, parsed.netloc, parsed.path, "", "", ""))
+                if norm_url in existing_keys:
+                    logger.debug("Skipping duplicate proposal by URL: %s", source_url)
+                    continue
+                existing_keys.add(norm_url)
+            except Exception:
+                pass
         # Generate proposal filename from title + hash
         slug = (f.get("title", "proposal"))[:60].strip()
         slug = "".join(c if c.isalnum() or c in "._- " else "" for c in slug)
-        slug = slug.strip().replace(" ", "_")[:50]
+        slug = slug.strip().replace(" ", "_")[:50] or "proposal"
         fid = item_hash(f)[:8]
         prop_name = f"{date_str}_{slug}_{fid}.md"
         prop_path = os.path.join(proposals_dir, prop_name)
@@ -550,23 +806,30 @@ def save_proposals(findings, date_str):
             f"source_report: {date_str}",
             f"source_url: {f.get('url', '')}",
             f"score: {f.get('score', 0)}",
+            f"category: {f.get('source', 'N/A')}",
             f"approved_at: ~",
             f"implemented_at: ~",
             f"verified_at: ~",
+            f"failure_reason: ~",
+            f"rollback_sha: ~",
             "---",
             "",
             f"# 📋 {f.get('title', '未命名提案')}",
             "",
-            f"**来源**: {f.get('source', 'N/A')} | **日期**: {date_str}",
-            f"**链接**: {f.get('url', 'N/A')}",
-            f"**评分**: {f.get('score', 0)}/10",
-            "",
-            "## 摘要",
-            f"> {f.get('summary', '（无摘要）')}",
-            "",
         ]
+
+        # One-line summary of what this is
+        raw_summary = f.get("summary", "（无摘要）")
+        desc = raw_summary.split("—", 1)[-1].strip() if "—" in raw_summary else raw_summary
+        source_icon = {"GitHub 热榜": "📦", "Arxiv": "📄", "AI HOT": "🔥"}.get(f.get("source", ""), "📌")
+        lines.append(f"> {source_icon} **{f.get('source', 'N/A')}** | ⭐ {f.get('score', 0)}/10 | {f.get('url', 'N/A')}")
+        lines.append("")
+        lines.append("## 这是什么")
+        lines.append(f"{desc[:300]}")
+        lines.append("")
+
         if f.get("insights"):
-            lines.append("## 对 Hermes 的影响")
+            lines.append("## 为什么对 Hermes 重要")
             for insight in f["insights"]:
                 lines.append(f"- {insight}")
             lines.append("")
@@ -574,7 +837,8 @@ def save_proposals(findings, date_str):
         if f.get("actions"):
             lines.append("## 建议行动")
             for a in f["actions"]:
-                lines.append(f"- **{a.get('action', '')}** │ 收益: {a.get('benefit', '')} │ 工作量: {a.get('effort', '')} │ 分类: {a.get('category', '')}")
+                lines.append(f"- **{a.get('action', '')}**")
+                lines.append(f"  - 📈 收益: {a.get('benefit', '')}  ⏱ 工作量: {a.get('effort', '')}  🏷️ {a.get('category', '')}")
             lines.append("")
 
         lines.extend([
@@ -586,12 +850,17 @@ def save_proposals(findings, date_str):
             "```",
             "pending → approved → implementing → implemented → verified",
             "pending → rejected",
+            "pending → deferred",
             "implemented → failed → rolled_back",
             "```",
+            "",
+            "### 失败回滚",
+            "失败时编辑 frontmatter，填写 `failure_reason` 和 `rollback_sha`。",
             "",
             "### 审批操作",
             "- 通过: 将 frontmatter 中 `status` 改为 `approved`",
             "- 拒绝: 将 frontmatter 中 `status` 改为 `rejected`",
+            "- 搁置: 将 frontmatter 中 `status` 改为 `deferred`",
             "- 实施后: 依次更新为 `implementing` → `implemented` → `verified`",
             "",
             "---",
@@ -599,11 +868,18 @@ def save_proposals(findings, date_str):
         ])
 
         try:
-            with open(prop_path, "w") as pf:
+            # Atomic write: temp file + rename
+            tmp_path = prop_path + ".tmp"
+            with open(tmp_path, "w", encoding="utf-8") as pf:
                 pf.write("\n".join(lines) + "\n")
+            os.replace(tmp_path, prop_path)
             saved += 1
         except Exception as e:
             logger.warning("Failed to save proposal %s: %s", prop_name, e)
+            try:
+                os.remove(tmp_path)
+            except Exception:
+                pass
 
     if saved:
         logger.info("📋 已保存 %s 份提案到 %s", saved, proposals_dir)
@@ -697,25 +973,35 @@ def update_index(date_str):
 def main():
     parser = argparse.ArgumentParser(description="Hermes 自主学习引擎 v3")
     parser.add_argument("--dry-run", action="store_true", help="只输出，不写文件")
-    parser.add_argument("--source", choices=["aihot", "github", "all"], default="all")
+    parser.add_argument("--source", choices=["aihot", "trending", "arxiv", "all"], default="all")
     args = parser.parse_args()
 
-    logger.info("=== Hermes Learner v3 开始 ===")
+    # Centralized seen loading — once at start, write once at end
+    seen = load_seen()
+    
+    logger.info("=== Hermes Learner v3 开始 === (数据源: AI HOT + GitHub热榜 + Arxiv)")
 
     aihot_findings, aihot_status = [], {"status": "n/a", "count": 0}
-    gh_findings, gh_status = [], {"status": "n/a", "count": 0}
+    trending_findings, trending_status = [], {"status": "n/a", "count": 0}
+    arxiv_findings, arxiv_status = [], {"status": "n/a", "count": 0}
 
     if args.source in ("aihot", "all"):
         logger.info("🔥 扫描 AI HOT...")
-        aihot_findings, aihot_status = fetch_aihot(hours=24)
+        aihot_findings, aihot_status = fetch_aihot(hours=24, seen=seen)
         logger.info("  AI HOT: 获取 %s 条, 收录 %s 条", aihot_status.get("total_fetched", "?"), aihot_status["count"])
 
-    if args.source in ("github", "all"):
-        logger.info("💻 扫描 GitHub...")
-        gh_findings, gh_status = fetch_github(days=7)
-        logger.info("  GitHub: 获取 %s 条, 收录 %s 条", gh_status.get("total_fetched", "?"), gh_status["count"])
+    if args.source in ("trending", "all"):
+        logger.info("🌟 扫描 GitHub 热榜...")
+        trending_findings, trending_status = fetch_github_trending(days=7, seen=seen)
+        logger.info("  GitHub热榜: 收录 %s 条", trending_status["count"])
 
-    report = format_report(aihot_findings, gh_findings, aihot_status, gh_status)
+    if args.source in ("arxiv", "all"):
+        logger.info("📄 扫描 Arxiv 论文...")
+        arxiv_findings, arxiv_status = fetch_arxiv(days=3, seen=seen)
+        logger.info("  Arxiv: 收录 %s 条", arxiv_status["count"])
+
+    report = format_report(aihot_findings, trending_findings, arxiv_findings,
+                           aihot_status, trending_status, arxiv_status)
     now = datetime.now(CST)
     date_str = now.strftime("%Y-%m-%d")
     report_path = os.path.join(LEARNINGS_DIR, f"{date_str}.md")
@@ -723,24 +1009,31 @@ def main():
     if args.dry_run:
         print(report)
         # Preview what proposals would be generated
-        prop_count = sum(1 for f in aihot_findings + gh_findings if f.get("actions"))
+        prop_count = sum(1 for f in aihot_findings + trending_findings + arxiv_findings if f.get("actions"))
         if prop_count:
             print(f"\n---\n📋 将生成 {prop_count} 份提案")
         logger.info("=== 干跑完成 ===")
         return
 
     os.makedirs(LEARNINGS_DIR, exist_ok=True)
-    with open(report_path, "w") as f:
+    # Atomic write: temp + rename
+    tmp_path = report_path + ".tmp"
+    with open(tmp_path, "w", encoding="utf-8") as f:
         f.write(report)
+    os.replace(tmp_path, report_path)
 
+    # Save seen items once — after all sources have completed
+    save_seen(seen)
+    
     update_index(date_str)
-    saved = save_proposals(aihot_findings + gh_findings, date_str)
+    saved = save_proposals(aihot_findings + trending_findings + arxiv_findings, date_str)
     proposals_dir = os.path.join(HERMES_HOME, "proposals")
     update_proposal_index(proposals_dir)
     logger.info("✅ 报告已保存: %s", report_path)
-    logger.info("📊 总计: %s 条 | 高价值: %s 条 | 提案: %s 份",
-                len(aihot_findings) + len(gh_findings),
-                sum(1 for f in aihot_findings + gh_findings if f["score"] >= PROPOSAL_SCORE),
+    logger.info("📊 总计: %s 条 (AI HOT %s + 热榜 %s + Arxiv %s) | 高价值: %s 条 | 提案: %s 份",
+                len(aihot_findings) + len(trending_findings) + len(arxiv_findings),
+                len(aihot_findings), len(trending_findings), len(arxiv_findings),
+                sum(1 for f in aihot_findings + trending_findings + arxiv_findings if f["score"] >= PROPOSAL_SCORE),
                 saved)
     logger.info("=== Hermes Learner v3 完成 ===")
 

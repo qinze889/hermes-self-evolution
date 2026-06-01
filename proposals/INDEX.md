@@ -2,11 +2,216 @@
 
 | 状态 | 数量 |
 |---|---|
-| pending | 6 |
+| pending | 24 |
+| approved | 41 |
+| implemented | 1 |
+| verified | 4 |
+| rejected | 62 |
 
-- [⏳ pending] [谷歌I/O大会发布AI代理全套开发工具链](2026-05-23_谷歌IO大会发布AI代理全套开发工具链_dc5e6402.md) ⭐7
-- [⏳ pending] [微软称，使用人工智能的成本高于支付人工工资](2026-05-23_微软称使用人工智能的成本高于支付人工工资_3b2d733b.md) ⭐8
-- [⏳ pending] [fix: support GitHub webhook body mention metadata](2026-05-23_fix_support_GitHub_webhook_body_mention_metadata_71f73aab.md) ⭐9
-- [⏳ pending] [feat: mark web extraction content as untrusted](2026-05-23_feat_mark_web_extraction_content_as_untrusted_d464fb78.md) ⭐10
-- [⏳ pending] [feat: Add Context Guardrails and Token Budgeting v1](2026-05-23_feat_Add_Context_Guardrails_and_Token_Budgeting_v1_f75262b3.md) ⭐9
-- [⏳ pending] [Feature: TTS Speed Control — Wire native rate params for Edg](2026-05-23_Feature_TTS_Speed_Control__Wire_native_rate_params_e87f6650.md) ⭐9
+- [❓ unknown] [提案审核日志](REVIEWED.md) ⭐0
+- [⏳ pending] [苹果WWDC将推AI升级：Gemini蒸馏模型本地运行，但技术栈外部依赖显著](2026-06-01_苹果WWDC将推AI升级Gemini蒸馏模型本地运行但技术栈外部依赖显著_8c8130cd.md) ⭐9
+- [⏳ pending] [tiwarn01/bilibili-cli](2026-06-01_tiwarn01bilibili-cli_e07839d1.md) ⭐10
+- [⏳ pending] [moksharth77/mcp-remnawave](2026-06-01_moksharth77mcp-remnawave_ab674d72.md) ⭐10
+- [⏳ pending] [kokorubbong/agenticqa-scan-action](2026-06-01_kokorubbongagenticqa-scan-action_1ed302c9.md) ⭐7
+- [⏳ pending] [hunter-heidenreich/academic-tools-mcp](2026-06-01_hunter-heidenreichacademic-tools-mcp_ffb930e6.md) ⭐10
+- [⏳ pending] [hermesSynth/hermes-synth](2026-06-01_hermesSynthhermes-synth_7e4e3845.md) ⭐8
+- [⏳ pending] [glitchpatrick/rftools-mcp](2026-06-01_glitchpatrickrftools-mcp_831306ea.md) ⭐10
+- [⏳ pending] [fjwood69/mori](2026-06-01_fjwood69mori_ebf47c04.md) ⭐10
+- [⏳ pending] [enriquetask/mcpfarm.ai](2026-06-01_enriquetaskmcpfarm.ai_0a5da873.md) ⭐10
+- [⏳ pending] [dsswift/ion](2026-06-01_dsswiftion_14afeeea.md) ⭐10
+- [⏳ pending] [djbroiscool90/github-command-center](2026-06-01_djbroiscool90github-command-center_89617da9.md) ⭐10
+- [⏳ pending] [devu2805/nitrostack](2026-06-01_devu2805nitrostack_e0ce4b60.md) ⭐10
+- [⏳ pending] [black22345/commune-cookbook](2026-06-01_black22345commune-cookbook_44ad8e15.md) ⭐10
+- [⏳ pending] [baljeet99/userdispatch-mcp](2026-06-01_baljeet99userdispatch-mcp_dd7d86ed.md) ⭐10
+- [⏳ pending] [ayybee1/product-manager-skills](2026-06-01_ayybee1product-manager-skills_5300344d.md) ⭐10
+- [⏳ pending] [allyliv/mindkeeper](2026-06-01_allylivmindkeeper_1de87ec2.md) ⭐10
+- [⏳ pending] [ahmed5bdelaal/luffa-agent-skills](2026-06-01_ahmed5bdelaalluffa-agent-skills_fd446154.md) ⭐9
+- [⏳ pending] [agentoven/agentoven](2026-06-01_agentovenagentoven_4d22bbfa.md) ⭐10
+- [⏳ pending] [SeyhmusKaya/agent-symphony](2026-06-01_SeyhmusKayaagent-symphony_f16d9d00.md) ⭐10
+- [⏳ pending] [Raizo-TCS/phronomy](2026-06-01_Raizo-TCSphronomy_6f726d62.md) ⭐7
+- [⏳ pending] [Nicoman501/Novel-OS](2026-06-01_Nicoman501Novel-OS_16b642ca.md) ⭐10
+- [⏳ pending] [Lilsmur/wamcp](2026-06-01_Lilsmurwamcp_8645f2e3.md) ⭐10
+- [⏳ pending] [Dimas1182/goclaw](2026-06-01_Dimas1182goclaw_01ee021c.md) ⭐10
+- [⏳ pending] [Daenerys888/noapi-google-search-mcp](2026-06-01_Daenerys888noapi-google-search-mcp_35e7fcc9.md) ⭐7
+- [❌ rejected] [免费领取6个月ChatGPT Pro及AI工具思考](2026-05-31_免费领取6个月ChatGPT_Pro及AI工具思考_e6e3fce5.md) ⭐9
+- [❓ deferred] [repairman29/chump](2026-05-31_repairman29chump_5560b1dd.md) ⭐8
+- [❓ deferred] [ransolo33iq/pelos](2026-05-31_ransolo33iqpelos_961c82ef.md) ⭐11
+- [❌ rejected] [qadeer-ux/oh-my-codex-remix](2026-05-31_qadeer-uxoh-my-codex-remix_932cb726.md) ⭐11
+- [❌ rejected] [paulieb89/uk-legal-mcp](2026-05-31_paulieb89uk-legal-mcp_f2dde62a.md) ⭐11
+- [❌ rejected] [juanmanueldaza/fu7ur3pr00f](2026-05-31_juanmanueldazafu7ur3pr00f_a965b070.md) ⭐11
+- [✅ approved] [joemekw-code/ozc](2026-05-31_joemekw-codeozc_79ea650e.md) ⭐10
+- [❓ deferred] [jaylfc/tinyagentos](2026-05-31_jaylfctinyagentos_282a3877.md) ⭐11
+- [❓ deferred] [hecatehq/hecate](2026-05-31_hecatehqhecate_76972212.md) ⭐9
+- [❌ rejected] [endergonic-deerfern142/MeiGen-DesignAgentBench](2026-05-31_endergonic-deerfern142MeiGen-DesignAgentBench_56180bf2.md) ⭐11
+- [❓ deferred] [diego-sigma/the-agency](2026-05-31_diego-sigmathe-agency_a6872146.md) ⭐9
+- [❓ deferred] [cachly-dev/cachly-mcp](2026-05-31_cachly-devcachly-mcp_f849c5f9.md) ⭐11
+- [❌ rejected] [Xuepoo/sonic-bridge](2026-05-31_Xuepoosonic-bridge_0050777d.md) ⭐7
+- [❌ rejected] [TerrapinPlant39/Microsoft-AutoGen-Agents-cracked](2026-05-31_TerrapinPlant39Microsoft-AutoGen-Agents-cracked_a52ee5c8.md) ⭐7
+- [❓ deferred] [OpenAF/mini-a](2026-05-31_OpenAFmini-a_7d03e60c.md) ⭐10
+- [❓ deferred] [M-Azfar9/ZeroLM-AgentMesh](2026-05-31_M-Azfar9ZeroLM-AgentMesh_410e91a3.md) ⭐9
+- [✅ approved] [LLMSecurity/awesome-agent-skills-security](2026-05-31_LLMSecurityawesome-agent-skills-security_c233310e.md) ⭐11
+- [❌ rejected] [KemiZHANG/xhs-ai-content-studio](2026-05-31_KemiZHANGxhs-ai-content-studio_40a54bbf.md) ⭐7
+- [✅ approved] [Divisionmatriarchate225/cli2mcp](2026-05-31_Divisionmatriarchate225cli2mcp_70ba3580.md) ⭐11
+- [✅ approved] [DeusData/codebase-memory-mcp](2026-05-31_DeusDatacodebase-memory-mcp_69a1de13.md) ⭐12
+- [❓ deferred] [Detective-XH/DocGraph](2026-05-31_Detective-XHDocGraph_d53b5c2a.md) ⭐11
+- [❌ rejected] [Deep-CodeAI/Agents.KT](2026-05-31_Deep-CodeAIAgents.KT_94a487f6.md) ⭐7
+- [✅ approved] [Carlos-Projects/mcp-attest](2026-05-31_Carlos-Projectsmcp-attest_1eb8c6b8.md) ⭐10
+- [❓ deferred] [CROW-B3/mcp-service](2026-05-31_CROW-B3mcp-service_5be6db11.md) ⭐8
+- [❌ rejected] [阶跃星辰 Step 3.7 Flash 发布，聚焦智能体效率](2026-05-30_阶跃星辰_Step_3.7_Flash_发布聚焦智能体效率_52fc1aff.md) ⭐10
+- [🎯 verified] [技能提炼](2026-05-30_技能提炼_201e7b73.md) ⭐8
+- [❌ rejected] [别只看基准测试，要看全面表现](2026-05-30_别只看基准测试要看全面表现_70db8563.md) ⭐8
+- [❌ rejected] [亲测为实：难以置信的推理速度](2026-05-30_亲测为实难以置信的推理速度_8970e27c.md) ⭐8
+- [❌ rejected] [yiling080225-cpu/ai-girl-friend](2026-05-30_yiling080225-cpuai-girl-friend_703ac028.md) ⭐10
+- [❌ rejected] [wyre-technology/sherweb-mcp](2026-05-30_wyre-technologysherweb-mcp_37bb26e4.md) ⭐7
+- [✅ approved] [sssstwee/switch-plus-plus](2026-05-30_sssstweeswitch-plus-plus_8608a47b.md) ⭐8
+- [✅ approved] [rhel-lightspeed/linux-mcp-server](2026-05-30_rhel-lightspeedlinux-mcp-server_affd005b.md) ⭐7
+- [✅ approved] [microsoft/agent-governance-toolkit](2026-05-30_microsoftagent-governance-toolkit_6385c254.md) ⭐11
+- [❓ deferred] [mbtiongson1/gaia-skill-tree](2026-05-30_mbtiongson1gaia-skill-tree_8d7e83c2.md) ⭐11
+- [❌ rejected] [llm-anthropic 0.25.1](2026-05-30_llm-anthropic_0.25.1_32dd05b5.md) ⭐10
+- [❓ deferred] [hermesc0dex/hermes-codex](2026-05-30_hermesc0dexhermes-codex_72dfe99d.md) ⭐7
+- [❌ rejected] [ahmedawad88/awesome-Server-tools](2026-05-30_ahmedawad88awesome-Server-tools_5b24263f.md) ⭐9
+- [❓ deferred] [ahmedEid1/lumen](2026-05-30_ahmedEid1lumen_29bf6d55.md) ⭐11
+- [❓ deferred] [achappey/aihappey-chat](2026-05-30_achappeyaihappey-chat_1b06ac22.md) ⭐11
+- [❌ rejected] [VideoMLA: Low-Rank Latent KV Cache for Minute-Scale Autoregr](2026-05-30_VideoMLA_Low-Rank_Latent_KV_Cache_for_Minute-Scale_183a325a.md) ⭐10
+- [❌ rejected] [Unna07/travel-planner-agent](2026-05-30_Unna07travel-planner-agent_6abec88f.md) ⭐11
+- [❌ rejected] [Teamwork/mcp](2026-05-30_Teamworkmcp_88399653.md) ⭐7
+- [❌ rejected] [SoundnessBench: Can Your AI Scientist Really Tell Good Resea](2026-05-30_SoundnessBench_Can_Your_AI_Scientist_Really_Tell_G_568e4373.md) ⭐7
+- [❓ deferred] [Samuray49/awesome-ai-agent-testing](2026-05-30_Samuray49awesome-ai-agent-testing_deb66f54.md) ⭐11
+- [❌ rejected] [Physics Is All You Need? A Case Study in Physicist-Supervise](2026-05-30_Physics_Is_All_You_Need_A_Case_Study_in_Physicist-_37cd211d.md) ⭐9
+- [❓ deferred] [M2-Tech-Montreal/zinq-agent-sdk](2026-05-30_M2-Tech-Montrealzinq-agent-sdk_39a09729.md) ⭐9
+- [❓ deferred] [JSONbored/awesome-claude](2026-05-30_JSONboredawesome-claude_8fd7d357.md) ⭐11
+- [❓ deferred] [Ipay062021/simkit](2026-05-30_Ipay062021simkit_41db77c7.md) ⭐7
+- [❓ deferred] [Ikalus1988/MisakaNet](2026-05-30_Ikalus1988MisakaNet_8b6ff440.md) ⭐10
+- [❌ rejected] [Efficient Test-Time Finetuning of LLMs via Convex Reconstruc](2026-05-30_Efficient_Test-Time_Finetuning_of_LLMs_via_Convex__e2f1d80f.md) ⭐10
+- [❌ rejected] [Czarnak/totally-integrated-claude](2026-05-30_Czarnaktotally-integrated-claude_4cc07fab.md) ⭐11
+- [❓ deferred] [英伟达推出 AI 框架 Polar，让 Codex 跑分暴涨 594.74%](2026-05-29_英伟达推出_AI_框架_Polar让_Codex_跑分暴涨_594.74_a4373147.md) ⭐8
+- [❌ rejected] [用好 Coding Agent，重点是两头，尤其是开头的部分，如果一开始就走偏了后面怎么改都改不好。](2026-05-29_用好_Coding_Agent重点是两头尤其是开头的部分如果一开始就走偏了后面怎么改都改不好_dfd933e9.md) ⭐8
+- [❓ deferred] [发布 Search Toolkit](2026-05-29_发布_Search_Toolkit_e02cf40a.md) ⭐7
+- [✅ approved] [votal-ai-hq/wb-red-team](2026-05-29_votal-ai-hqwb-red-team_544632bd.md) ⭐10
+- [✅ approved] [tanveerkhan2005/custom-agent-with-skills](2026-05-29_tanveerkhan2005custom-agent-with-skills_36dbae4d.md) ⭐11
+- [❓ deferred] [netdata/ai-viewer](2026-05-29_netdataai-viewer_7bee44c6.md) ⭐7
+- [✅ approved] [juancok888/minicode-sdk](2026-05-29_juancok888minicode-sdk_fdcf7bab.md) ⭐11
+- [❌ rejected] [jessevanwyk1/claude-scholar](2026-05-29_jessevanwyk1claude-scholar_1cc12549.md) ⭐9
+- [❌ rejected] [hexoai开源SIA框架：AI智能体实现递归自我改进](2026-05-29_hexoai开源SIA框架AI智能体实现递归自我改进_eaf86be8.md) ⭐8
+- [✅ approved] [gridctl/gridctl](2026-05-29_gridctlgridctl_8f6a55b2.md) ⭐7
+- [❌ rejected] [dwana1/golang-skills](2026-05-29_dwana1golang-skills_450ea85a.md) ⭐9
+- [❌ rejected] [designer23d/openclaw-supermemory](2026-05-29_designer23dopenclaw-supermemory_c4e27236.md) ⭐11
+- [✅ approved] [coconutpalm/winze](2026-05-29_coconutpalmwinze_5927ea32.md) ⭐11
+- [❌ rejected] [bees-roadhouse/bookstack-mcp](2026-05-29_bees-roadhousebookstack-mcp_11e3d1a6.md) ⭐11
+- [✅ approved] [SonicBotMan/SoloFlow](2026-05-29_SonicBotManSoloFlow_6e543285.md) ⭐11
+- [❌ rejected] [SGLang 团队与 AMD 合作，使 AMD InstinctTM MI355X GPU 的大规模 DeepSeek-](2026-05-29_SGLang_团队与_AMD_合作使_AMD_InstinctTM_MI355X_GPU_的大规模__d1014b54.md) ⭐7
+- [❌ rejected] [Qwen3.7-Max 登顶 OpenRouter 热门大模型榜](2026-05-29_Qwen3.7-Max_登顶_OpenRouter_热门大模型榜_9ccbd446.md) ⭐8
+- [❓ deferred] [Personal Visual Memory from Explicit and Implicit Evidence](2026-05-29_Personal_Visual_Memory_from_Explicit_and_Implicit__e344b7e1.md) ⭐9
+- [❌ rejected] [PEFT-Arena: Understanding Parameter-Efficient Finetuning fro](2026-05-29_PEFT-Arena_Understanding_Parameter-Efficient_Finet_9ff72a11.md) ⭐8
+- [❌ rejected] [OpenAI 的前沿治理框架](2026-05-29_OpenAI_的前沿治理框架_c1b25467.md) ⭐8
+- [❓ deferred] [Louishin/claude-api-cost-optimization](2026-05-29_Louishinclaude-api-cost-optimization_aa6a49dc.md) ⭐11
+- [❌ rejected] [Lokesh-Bathala/mcp-app-with-hono](2026-05-29_Lokesh-Bathalamcp-app-with-hono_2532de3b.md) ⭐8
+- [✅ approved] [LVT382009/mizumi](2026-05-29_LVT382009mizumi_828b1a53.md) ⭐11
+- [❌ rejected] [Grok Build 0.1 on API](2026-05-29_Grok_Build_0.1_on_API_64004740.md) ⭐10
+- [❌ rejected] [Claude Opus 4.8 发布：在编码、智能体技能与推理方面实现全面升级](2026-05-29_Claude_Opus_4.8_发布在编码智能体技能与推理方面实现全面升级_521bcd94.md) ⭐9
+- [❓ deferred] [Acelito7618/agentsmith-cli](2026-05-29_Acelito7618agentsmith-cli_12b75e74.md) ⭐11
+- [✅ approved] [777genius/plugin-kit-ai](2026-05-29_777geniusplugin-kit-ai_e9968586.md) ⭐11
+- [❓ deferred] [我认为 Anthropic 和 OpenAI 找到了产品市场契合点](2026-05-28_我认为_Anthropic_和_OpenAI_找到了产品市场契合点_cf0e24b5.md) ⭐10
+- [❓ deferred] [ysz7/majestic-agent](2026-05-28_ysz7majestic-agent_5910b512.md) ⭐11
+- [📦 implemented] [spash/fileops](2026-05-28_spashfileops_d272cbfe.md) ⭐8
+- [❌ rejected] [relix23/Github-MCP-Server](2026-05-28_relix23Github-MCP-Server_9a79e976.md) ⭐7
+- [✅ approved] [panguard-ai/panguard-ai](2026-05-28_panguard-aipanguard-ai_e5be3138.md) ⭐11
+- [✅ approved] [msoedov/agentic_security](2026-05-28_msoedovagentic_security_99d005a1.md) ⭐11
+- [❌ rejected] [justinabarquez/omen](2026-05-28_justinabarquezomen_15a92187.md) ⭐7
+- [❌ rejected] [ericvoltolin/xc-mcp](2026-05-28_ericvoltolinxc-mcp_4545d830.md) ⭐11
+- [❓ deferred] [cameronrye/activitypub-mcp](2026-05-28_cameronryeactivitypub-mcp_b238e192.md) ⭐11
+- [❓ deferred] [aws/bedrock-agentcore-sdk-python](2026-05-28_awsbedrock-agentcore-sdk-python_9c685999.md) ⭐10
+- [❓ deferred] [anhtnt90dev/ai-engineering-stack-guide](2026-05-28_anhtnt90devai-engineering-stack-guide_dda4c2ab.md) ⭐11
+- [❓ deferred] [Runway 推出 Model Context Protocol 服务器](2026-05-28_Runway_推出_Model_Context_Protocol_服务器_dbe590ce.md) ⭐10
+- [❓ deferred] [Natural Language Query to Configuration for Retrieval Agents](2026-05-28_Natural_Language_Query_to_Configuration_for_Retrie_5a960ab2.md) ⭐9
+- [❓ deferred] [MunnaXbadmash/ai-dev-assistant-framework](2026-05-28_MunnaXbadmashai-dev-assistant-framework_beb1b628.md) ⭐11
+- [✅ approved] [MUSE-Autoskill: Self-Evolving Agents via Skill Creation, Mem](2026-05-28_MUSE-Autoskill_Self-Evolving_Agents_via_Skill_Crea_e4f485f1.md) ⭐9
+- [❌ rejected] [LocateAnything: Fast and High-Quality Vision-Language Ground](2026-05-28_LocateAnything_Fast_and_High-Quality_Vision-Langua_eb5ba9fe.md) ⭐7
+- [❓ deferred] [JeroenPieksma/claude-computer](2026-05-28_JeroenPieksmaclaude-computer_5aa8fa37.md) ⭐11
+- [❓ deferred] [JasonFinestone/runspec](2026-05-28_JasonFinestonerunspec_0913ae76.md) ⭐9
+- [❌ rejected] [ITBench-AA：前沿大模型在首个智能体企业IT任务基准测试中得分均低于50%](2026-05-28_ITBench-AA前沿大模型在首个智能体企业IT任务基准测试中得分均低于50_5abcaf5d.md) ⭐7
+- [❌ rejected] [GENESIS: Harnessing AI Agents for Autonomous 6G RAN Synthesi](2026-05-28_GENESIS_Harnessing_AI_Agents_for_Autonomous_6G_RAN_3c525577.md) ⭐7
+- [❌ rejected] [Fast， faster， Qwen. 🚀](2026-05-28_Fast_faster_Qwen._eec898cc.md) ⭐10
+- [❌ rejected] [Fahadfk/AI_deployment](2026-05-28_FahadfkAI_deployment_8bbc4bea.md) ⭐8
+- [❌ rejected] [Claude Code v2.1.152 更新发布](2026-05-28_Claude_Code_v2.1.152_更新发布_9d00f689.md) ⭐9
+- [❓ deferred] [AI智能体的零信任安全框架](2026-05-28_AI智能体的零信任安全框架_f6013184.md) ⭐10
+- [❓ deferred] [1Dark134/arxiv-mcp-server](2026-05-28_1Dark134arxiv-mcp-server_5b499e3c.md) ⭐11
+- [✅ approved] ["龙虾之父"Peter 开源 skill-cleaner，为 AI 智能体技能"做体检"](2026-05-27_龙虾之父Peter_开源_skill-cleaner为_AI_智能体技能做体检_eb86c49f.md) ⭐8
+- [❌ rejected] [苹果据称正使用定制版1.2T参数Google模型重塑下一代Siri](2026-05-27_苹果据称正使用定制版1.2T参数Google模型重塑下一代Siri_767e0ce8.md) ⭐9
+- [✅ approved] [我们如何对不同产品中的Claude进行隔离控制](2026-05-27_我们如何对不同产品中的Claude进行隔离控制_d12caf33.md) ⭐10
+- [❓ deferred] [vishalmysore/Tools4AI](2026-05-27_vishalmysoreTools4AI_7fb6a212.md) ⭐11
+- [✅ approved] [truvaagents/truva-g3](2026-05-27_truvaagentstruva-g3_45560a6e.md) ⭐11
+- [❌ rejected] [trungcodeer/softjunk-lead-kit](2026-05-27_trungcodeersoftjunk-lead-kit_c1a7241c.md) ⭐7
+- [❌ rejected] [svnscha/mcp-windbg](2026-05-27_svnschamcp-windbg_7e6b648b.md) ⭐7
+- [❌ rejected] [shigetosidumeda-cyber/autonomath-mcp](2026-05-27_shigetosidumeda-cyberautonomath-mcp_0748171a.md) ⭐11
+- [❌ rejected] [ober37/ac-infinity-mcp](2026-05-27_ober37ac-infinity-mcp_bc49d8c7.md) ⭐10
+- [❌ rejected] [mvamsikrishna982-png/LLM-Powered-Expense-Tracker-via-MCP](2026-05-27_mvamsikrishna982-pngLLM-Powered-Expense-Tracker-vi_d5944ef5.md) ⭐8
+- [❌ rejected] [issamsam/Aethershell](2026-05-27_issamsamAethershell_de26317b.md) ⭐7
+- [❌ rejected] [hidetheweed11/n8n_ExecutiveBot_Platform](2026-05-27_hidetheweed11n8n_ExecutiveBot_Platform_2106fa6d.md) ⭐7
+- [❓ deferred] [gunbun33/mcp-servers](2026-05-27_gunbun33mcp-servers_8addfd3e.md) ⭐11
+- [❓ deferred] [event4u-app/agent-config](2026-05-27_event4u-appagent-config_1d6d0720.md) ⭐11
+- [✅ approved] [chopratejas/headroom](2026-05-27_chopratejasheadroom_065f3596.md) ⭐12
+- [❌ rejected] [Sundar Pichai 谈 AI、搜索的未来及网络的变化](2026-05-27_Sundar_Pichai_谈_AI搜索的未来及网络的变化_8c1e98c3.md) ⭐8
+- [❌ rejected] [Qwen3.7-Max 成为全球第二AI编程模型](2026-05-27_Qwen3.7-Max_成为全球第二AI编程模型_65accdc4.md) ⭐7
+- [❌ rejected] [OpenAI GPT-5.6 模型曝下月发布：AI 上下文 150 万 tokens](2026-05-27_OpenAI_GPT-5.6_模型曝下月发布AI_上下文_150_万_tokens_867deb28.md) ⭐10
+- [❌ rejected] [HOYOOOOOUNG/ai-media-project](2026-05-27_HOYOOOOOUNGai-media-project_2ca2bb3d.md) ⭐8
+- [✅ approved] [From Model Scaling to System Scaling: Scaling the Harness in](2026-05-27_From_Model_Scaling_to_System_Scaling_Scaling_the_H_aed3685c.md) ⭐10
+- [❓ deferred] [Chunduri-Aditya/agent-shield](2026-05-27_Chunduri-Adityaagent-shield_d5cb9726.md) ⭐11
+- [❓ deferred] [Aureliolo/synthorg](2026-05-27_Aureliolosynthorg_315cb72e.md) ⭐8
+- [❓ deferred] [tr00x/SOMA-Core](2026-05-26_tr00xSOMA-Core_2ba4a183.md) ⭐7
+- [❓ deferred] [thesiddguy/GenAI](2026-05-26_thesiddguyGenAI_c1c469b1.md) ⭐11
+- [❓ deferred] [study8677/opencrab](2026-05-26_study8677opencrab_9f61699e.md) ⭐9
+- [✅ approved] [moltis-org/moltis](2026-05-26_moltis-orgmoltis_ee9c2b81.md) ⭐12
+- [❓ deferred] [mitsou55/100-GitHub-Projects-That-Defined-2025](2026-05-26_mitsou55100-GitHub-Projects-That-Defined-2025_c4506776.md) ⭐9
+- [❓ deferred] [kacchanff/agent-playground](2026-05-26_kacchanffagent-playground_6f00934a.md) ⭐11
+- [❓ deferred] [jhonny028966/pg-aiguide](2026-05-26_jhonny028966pg-aiguide_335ddc41.md) ⭐11
+- [❓ deferred] [idontknow684/Miyabi_AI_Agent](2026-05-26_idontknow684Miyabi_AI_Agent_9df7ee6e.md) ⭐10
+- [❓ deferred] [hdhks1229i3/vibecheck](2026-05-26_hdhks1229i3vibecheck_f3b4d6f3.md) ⭐8
+- [✅ approved] [gdinesh012/onemcp](2026-05-26_gdinesh012onemcp_24cf8cc3.md) ⭐11
+- [❓ deferred] [andyrizqyhar/Sentra-Agent](2026-05-26_andyrizqyharSentra-Agent_6e3be472.md) ⭐7
+- [❓ deferred] [XXXTENTACIONLEYENDA/ServerSlayer](2026-05-26_XXXTENTACIONLEYENDAServerSlayer_5ada70eb.md) ⭐7
+- [✅ approved] [SkillOpt: Executive Strategy for Self-Evolving Agent Skills](2026-05-26_SkillOpt_Executive_Strategy_for_Self-Evolving_Agen_9c381de2.md) ⭐10
+- [❓ deferred] [ShootaOT/db-mcp](2026-05-26_ShootaOTdb-mcp_cc2b5166.md) ⭐11
+- [❌ rejected] [PiD: Fast and High-Resolution Latent Decoding with Pixel Dif](2026-05-26_PiD_Fast_and_High-Resolution_Latent_Decoding_with__6bbb58be.md) ⭐10
+- [❓ deferred] [Niranjan-008/Agentic-Decision-Cell](2026-05-26_Niranjan-008Agentic-Decision-Cell_2cb49d05.md) ⭐7
+- [❓ deferred] [MikkoParkkola/trvl](2026-05-26_MikkoParkkolatrvl_e7fc280d.md) ⭐11
+- [❓ deferred] [Kuonirad/MCOP-Framework-2.0](2026-05-26_KuoniradMCOP-Framework-2.0_0c744f5c.md) ⭐7
+- [❓ deferred] [Kirbydads/Ralph-Mode](2026-05-26_KirbydadsRalph-Mode_c1c2317b.md) ⭐10
+- [❓ deferred] [Justkokosixnine/polymarket-mcp-server](2026-05-26_Justkokosixninepolymarket-mcp-server_bd31e13b.md) ⭐11
+- [✅ approved] [JaimeJunr/context-engine](2026-05-26_JaimeJunrcontext-engine_5f11a8ca.md) ⭐11
+- [❓ deferred] [Harness、Scaffold 与 AI 智能体术语辨析](2026-05-26_HarnessScaffold_与_AI_智能体术语辨析_b0a3541f.md) ⭐10
+- [✅ approved] [Fzkuji/OpenProgram](2026-05-26_FzkujiOpenProgram_705067a0.md) ⭐11
+- [✅ approved] [From Raw Experience to Skill Consumption: A Systematic Study](2026-05-26_From_Raw_Experience_to_Skill_Consumption_A_Systema_1d3bf9a1.md) ⭐7
+- [❌ rejected] [Complete-muE: Optimal Hyperparameter Transfer and Scaling fo](2026-05-26_Complete-muE_Optimal_Hyperparameter_Transfer_and_S_7bdbb1c2.md) ⭐8
+- [❓ deferred] [BKstuudio/2ly](2026-05-26_BKstuudio2ly_3515d6f3.md) ⭐11
+- [❓ deferred] [tony-zhelonkin/SciAgent-toolkit](2026-05-25_tony-zhelonkinSciAgent-toolkit_d0583ae1.md) ⭐10
+- [❓ deferred] [simpx/loopat](2026-05-25_simpxloopat_3f3dbe9a.md) ⭐8
+- [✅ approved] [ruvnet/ruflo](2026-05-25_ruvnetruflo_c14c9f21.md) ⭐12
+- [❓ deferred] [ozgurcd/gograph](2026-05-25_ozgurcdgograph_67727d3f.md) ⭐11
+- [✅ approved] [miniLV/Plexus](2026-05-25_miniLVPlexus_a7b5bbe5.md) ⭐11
+- [❓ deferred] [linny006/prompt-tools-live](2026-05-25_linny006prompt-tools-live_efdbc401.md) ⭐9
+- [❓ deferred] [linny006/llm-eval-tracker](2026-05-25_linny006llm-eval-tracker_45ff89de.md) ⭐8
+- [❓ deferred] [kyle122497/llamator-mcp-server](2026-05-25_kyle122497llamator-mcp-server_1b28aca9.md) ⭐7
+- [✅ approved] [farchanjo/substrate](2026-05-25_farchanjosubstrate_7192f974.md) ⭐11
+- [❓ deferred] [MyNameIsEdi/open-qa](2026-05-25_MyNameIsEdiopen-qa_0cdd384b.md) ⭐11
+- [❓ deferred] [MiaoDX/roboclaws](2026-05-25_MiaoDXroboclaws_0a47e4fb.md) ⭐11
+- [❌ rejected] [Integrable Elasticity via Neural Demand Potentials](2026-05-25_Integrable_Elasticity_via_Neural_Demand_Potentials_aa282a02.md) ⭐7
+- [❌ rejected] [Cambrian-P: Pose-Grounded Video Understanding](2026-05-25_Cambrian-P_Pose-Grounded_Video_Understanding_b5a8abb9.md) ⭐7
+- [❌ rejected] [Amirahmed0685/gradle-build-accelerator](2026-05-25_Amirahmed0685gradle-build-accelerator_9e681a09.md) ⭐7
+- [✅ approved] [7xuanlu/origin](2026-05-25_7xuanluorigin_fc1200ea.md) ⭐11
+- [✅ approved] [1337Xcode/cortex](2026-05-25_1337Xcodecortex_688c0093.md) ⭐11
+- [🎯 verified] [recodeee/cue](2026-05-24_recodeeecue_941bfde7.md) ⭐11
+- [✅ approved] [mrlaoliai/polaris-harness](2026-05-24_mrlaoliaipolaris-harness_21ce1132.md) ⭐7
+- [❓ deferred] [magna-nz/aspnetcore-debugger-mcp](2026-05-24_magna-nzaspnetcore-debugger-mcp_653bc9c2.md) ⭐10
+- [✅ approved] [devinwang/cloak-browser-mcp](2026-05-24_devinwangcloak-browser-mcp_f71e72fe.md) ⭐10
+- [✅ approved] [atelier-runtime/atelier](2026-05-24_atelier-runtimeatelier_58b59574.md) ⭐11
+- [❓ deferred] [accord-protocol/accord-protocol](2026-05-24_accord-protocolaccord-protocol_5dd0495c.md) ⭐9
+- [❓ deferred] [StellarRequiem/Forest-Soul-Forge](2026-05-24_StellarRequiemForest-Soul-Forge_144b104e.md) ⭐10
+- [❓ deferred] [ProtocolWarden/ContextLifecycle](2026-05-24_ProtocolWardenContextLifecycle_eb78e1be.md) ⭐7
+- [❓ deferred] [Harusame64/desktop-touch-mcp](2026-05-24_Harusame64desktop-touch-mcp_7fa99772.md) ⭐8
+- [✅ approved] [HIDORAKAI002/ai-workspace-archive](2026-05-24_HIDORAKAI002ai-workspace-archive_8c4e9473.md) ⭐11
+- [❓ deferred] [0rkz/byte-mcp-server](2026-05-24_0rkzbyte-mcp-server_e2b0c0d1.md) ⭐8
+- [🎯 verified] [feat(prompt-builder): make CONTEXT_FILE_MAX_CHARS configurab](2026-05-23_featprompt-builder_make_CONTEXT_FILE_MAX_CHARS_con_bf1f930d.md) ⭐9
+- [✅ approved] [feat(egress): iron-proxy credential-injection firewall for s](2026-05-23_feategress_iron-proxy_credential-injection_firewal_43cc4665.md) ⭐8
+- [✅ approved] [feat(cli): add native Antigravity OAuth provider](2026-05-23_featcli_add_native_Antigravity_OAuth_provider_fc458d23.md) ⭐7
+- [🎯 verified] [[Feature]: TokenTelemetry Plugin for Integration into Hermes](2026-05-23_Feature_TokenTelemetry_Plugin_for_Integration_into_9f87d02e.md) ⭐10

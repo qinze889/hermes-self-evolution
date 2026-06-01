@@ -1,13 +1,9 @@
-# Python
-__pycache__/
 *.pyc
-*.pyo
-.env
-
-# IDE
-.vscode/
-.idea/
-
-# OS
+__pycache__/
 .DS_Store
-Thumbs.db
+*.log
+.env
+node_modules/
+.next/
+*.processed
+seen_items.json
